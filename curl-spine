@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# TODOS:
+# - error handling
+# - pass params (cert folder, asid) optionally as arg?
+# - check uuid is installed
+
+CERT_FOLDER=certs
+# test/dev asid finchley hospital 200000001772
+# test/dev asid barnet 200000001773
+# default one (continuity service dev) 200000001613
+ASID_TO_SET="200000001613"
+REQUEST_BODY_TEMPLATE=$(cat request-body-template.xml)
+
+echo $(echo "${REQUEST_BODY_TEMPLATE/TIMESTAMP_PLACEHOLDER/$(date +"%Y%m%d%H%M%S")}") \
+  | echo $(read x; echo "${x//ASID_PLACEHOLDER/${ASID_TO_SET}}") \
+  | curl -v -k \
+  -H "charset: UTF-8" \
+  -H "SOAPAction: urn:nhs:names:services:pdsquery/QUPA_IN000008UK02" \
+  -H "Content-Type: text/xml" \
+  -H "type: text/xml" \
+  -H "Correlation-Id: $(uuid)" \
+  -H "Message-Id: $(uuid)" \
+  -H "Interaction-Id: QUPA_IN000008UK02" \
+  -X POST \
+  -d "$(</dev/stdin)" \
+  --key "$CERT_FOLDER/key" \
+  --cert "$CERT_FOLDER/cert" \
+  --cacert "$CERT_FOLDER/cacert" \
+  https://msg.intspineservices.nhs.uk/sync-service > response-$(date +"%Y%m%d%H%M%S")
