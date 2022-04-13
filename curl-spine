@@ -12,11 +12,10 @@
 CERT_FOLDERS=certs
 ASID="200000001613"
 NHS_NUMBER="9693796381"
-REQUEST_BODY_TEMPLATE=$(cat request-body-template.xml)
 
-echo $(echo "${REQUEST_BODY_TEMPLATE/TIMESTAMP_PLACEHOLDER/$(date +"%Y%m%d%H%M%S")}") \
-  | echo $(read x; echo "${x//ASID_PLACEHOLDER/${ASID}}") \
-  | echo $(read x; echo "${x//NHS_NUMBER_PLACEHOLDER/${NHS_NUMBER}}") \
+sed "s/TIMESTAMP_PLACEHOLDER/$(date +"%Y%m%d%H%M%S")/g" < "request-body-template.xml" \
+  | sed "s/ASID_PLACEHOLDER/$ASID/g" \
+  | sed "s/NHS_NUMBER_PLACEHOLDER/$NHS_NUMBER/g" \
   | curl -v -k \
   -H "charset: UTF-8" \
   -H "SOAPAction: urn:nhs:names:services:pdsquery/QUPA_IN000008UK02" \
@@ -30,4 +29,4 @@ echo $(echo "${REQUEST_BODY_TEMPLATE/TIMESTAMP_PLACEHOLDER/$(date +"%Y%m%d%H%M%S
   --key "$CERT_FOLDERS/key" \
   --cert "$CERT_FOLDERS/cert" \
   --cacert "$CERT_FOLDERS/cacert" \
-  https://msg.intspineservices.nhs.uk/sync-service > response-$(date +"%Y%m%d%H%M%S")
+  https://msg.intspineservices.nhs.uk/sync-service > response-"$(date +"%Y%m%d%H%M%S")"
