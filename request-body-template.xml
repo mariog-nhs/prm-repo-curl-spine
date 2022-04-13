@@ -56,7 +56,7 @@
                         <semanticsText>historicDataIndicator</semanticsText>
                     </historicDataIndicator>
                     <person.id>
-                        <value root="2.16.840.1.113883.2.1.4.1" extension="9692295281" />
+                        <value root="2.16.840.1.113883.2.1.4.1" extension="NHS_NUMBER_PLACEHOLDER" />
                         <semanticsText>person.id</semanticsText>
                     </person.id>
                     <retrievalItem>
